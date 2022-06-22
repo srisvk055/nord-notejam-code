@@ -1,9 +1,9 @@
 name: Deploy to GKE cloud
 on:
- push: [main]
+ push: [master]
  pull_request:
     branches: 
-      - main
+      - master
     types:
       #- created
       - closed
@@ -27,13 +27,13 @@ jobs:
         SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_CR_KEY }}
         HOST: 'gcr.io'
     - name: Build the docker image to dev
-      if: (github.event_name == 'pull_request' && github.base_ref == 'main')
+      if: (github.event_name == 'pull_request' && github.base_ref == 'master')
       run: |-
-        docker build -f Dockerfile -t gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:$GITHUB_SHA .
+        docker build -f Dockerfile -t gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:latest .
     - name: Push to the registry to dev
-      if: (github.event_name == 'pull_request' && github.base_ref == 'main')
+      if: (github.event_name == 'pull_request' && github.base_ref == 'master')
       run: |-
-        docker push gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:$GITHUB_SHA
+        docker push gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:latest
   deploy:
      name: deploying to GKE
      needs: build
@@ -46,12 +46,12 @@ jobs:
        with:
         kubectl: '1.17.1'
         kustomize: '3.7.0'
-     - name: Create kubeconfig for main
-       if: (github.event_name == 'pull_request' && github.base_ref == 'main')
+     - name: Create kubeconfig for master
+       if: (github.event_name == 'pull_request' && github.base_ref == 'master')
        run: |-
          mkdir ${HOME}/.kube
          echo "${{ secrets.KUBECONFIG_K8S_DEPLOY }}" | base64 --decode > ${HOME}/.kube/config
      - name: Update the image name in kustomize and deploy to dev
-       if: (github.event_name == 'pull_request' && github.base_ref == 'main')
+       if: (github.event_name == 'pull_request' && github.base_ref == 'master')
        run: |-
          kubectl apply -f k8s/
