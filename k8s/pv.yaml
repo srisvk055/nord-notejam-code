@@ -1,12 +1,13 @@
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: myfileserver 
-spec:
-  capacity:
-    storage: 1T
-  accessModes:
-    - ReadWriteMany
-  nfs:
-    path: /gkenordcloud 
-    server: 10.197.102.250
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: myfileserver 
+#   namespace: prod-notejam
+# spec:
+#   capacity:
+#     storage: 1T
+#   accessModes:
+#     - ReadWriteMany
+#   nfs:
+#     path: /gkenordcloud 
+#     server: 10.197.102.250

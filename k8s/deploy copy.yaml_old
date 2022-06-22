@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+ name: notejam-pvc
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+
 ---     
 apiVersion: apps/v1
 kind: Deployment
@@ -26,6 +38,13 @@ spec:
               memory: 256Mi
           ports:
             - containerPort: 5000
+          volumeMounts:
+            - name: notejam-db
+              mountPath: /notejam
+      volumes:
+        - name: notejam-db
+          persistentVolumeClaim:
+            claimName: notejam-pvc
 ---
 apiVersion: v1
 kind: Service

@@ -1,0 +1,57 @@
+name: Deploy to GKE cloud
+on:
+ push: [main]
+ pull_request:
+    branches: 
+      - main
+    types:
+      #- created
+      - closed
+    paths-ignore:
+      - '**.md'
+      - 'log/**'
+      - '.github/**'
+env:
+   PROJECT_ID: "gcp-ocp-352612"
+   IMAGE_NAME: "notejam"
+jobs:
+  build:
+    name: Build/Push docker image
+    runs-on: ubuntu-latest
+    steps:
+    - name: Chekcout the latest version 
+      uses: actions/checkout@v2
+    - name: Login Docker
+      uses: 'lagren/docker-gcr-action@master'
+      with:
+        SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_CR_KEY }}
+        HOST: 'gcr.io'
+    - name: Build the docker image to dev
+      if: (github.event_name == 'pull_request' && github.base_ref == 'main')
+      run: |-
+        docker build -f Dockerfile -t gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:$GITHUB_SHA .
+    - name: Push to the registry to dev
+      if: (github.event_name == 'pull_request' && github.base_ref == 'main')
+      run: |-
+        docker push gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:$GITHUB_SHA
+  deploy:
+     name: deploying to GKE
+     needs: build
+     #if: (github.event.pull_request.merged == true)
+     runs-on: ubuntu-latest
+     steps:
+     - name: Chekcout the latest version 
+       uses: actions/checkout@v2
+     - uses: yokawasa/action-setup-kube-tools@v0.7.1
+       with:
+        kubectl: '1.17.1'
+        kustomize: '3.7.0'
+     - name: Create kubeconfig for main
+       if: (github.event_name == 'pull_request' && github.base_ref == 'main')
+       run: |-
+         mkdir ${HOME}/.kube
+         echo "${{ secrets.KUBECONFIG_K8S_DEPLOY }}" | base64 --decode > ${HOME}/.kube/config
+     - name: Update the image name in kustomize and deploy to dev
+       if: (github.event_name == 'pull_request' && github.base_ref == 'main')
+       run: |-
+         kubectl apply -f k8s/
