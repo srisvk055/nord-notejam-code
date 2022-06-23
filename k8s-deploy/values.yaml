@@ -1,7 +1,7 @@
 environment:
-  name: prod
+  name: dev
 
-replicaCount: 2
+replicaCount: 4
 
 image:
   repository: gcr.io/gcp-ocp-352612/notejam/notejam
