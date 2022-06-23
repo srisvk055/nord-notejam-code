@@ -1,0 +1,71 @@
+name: Deploy to GKE cloud
+on:
+  push:
+    branches:
+      - master 
+  pull_request:
+    branches: 
+      - master
+    types:
+      #- created
+      - closed
+    paths-ignore:
+      - '**.md'
+      - 'log/**'
+      - '.github/**'
+env:
+   PROJECT_ID: "gcp-ocp-352612"
+   IMAGE_NAME: "notejam"
+jobs:
+  build:
+    name: Build/Push docker image
+    runs-on: ubuntu-latest
+    steps:
+    - name: Chekcout the latest version 
+      uses: actions/checkout@v2
+    - name: Login Docker
+      uses: 'lagren/docker-gcr-action@master'
+      with:
+        SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_CR_KEY }}
+        HOST: 'gcr.io'
+    - name: Build the docker image to dev
+#      if: (github.event_name == 'pull_request' && github.base_ref == 'master')
+      run: |-
+        docker build -f Dockerfile -t gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:latest .
+    - name: Push to the registry to dev
+#      if: (github.event_name == 'pull_request' && github.base_ref == 'master')
+      run: |-
+        docker push gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:latest
+  deploy:
+     name: deploying to GKE
+     needs: build
+     #if: (github.event.pull_request.merged == true)
+     runs-on: ubuntu-latest
+     steps:
+     - name: Chekcout the latest version 
+       uses: actions/checkout@v2
+     - id: 'auth'
+       uses: 'google-github-actions/auth@v0'
+       with:
+        credentials_json: ${{ secrets.GCP_SA_CR_KEY }}
+     - name: 'Set up Cloud SDK'
+       uses: 'google-github-actions/setup-gcloud@v0'
+       with:
+        project_id: ${{ env.PROJECT_ID }}
+        export_default_credentials: true
+     - uses: yokawasa/action-setup-kube-tools@v0.7.1
+       with:
+        kubectl: '1.17.1'
+        kustomize: '3.7.0'
+#      - name: Create kubeconfig for master
+# #       if: (github.event_name == 'pull_request' && github.base_ref == 'master')
+#        run: |-
+#          mkdir ${HOME}/.kube
+#          echo "${{ secrets.KUBECONFIG_K8S_DEPLOY }}" | base64 --decode > ${HOME}/.kube/config
+     - name: Update the image name in kustomize and deploy to dev
+ #      if: (github.event_name == 'pull_request' && github.base_ref == 'master')
+       run: |-
+         echo ${{ secrets.GCP_SA_CR_KEY }} > ${HOME}/cloud.json 
+        #  gcloud auth activate-service-account --key-file=${HOME}/cloud.json
+        #  gcloud container clusters get-credentials nord-cluster --region us-central1 --project $PROJECT_ID
+        #  kubectl apply -f k8s/

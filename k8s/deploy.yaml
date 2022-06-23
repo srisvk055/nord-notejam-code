@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: notejam-app
-          image: gcr.io/gcp-ocp-352612/notejam:latest
+          image: gcr.io/gcp-ocp-352612/notejam/notejam:latest
           resources:
             requests:
               cpu: 100m

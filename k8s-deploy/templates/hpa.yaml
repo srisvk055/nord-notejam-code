@@ -2,14 +2,15 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "notejam.fullname" . }}
+  name: {{ .Chart.Name }}-app
+  namespace: {{ .Values.environment.name }}-{{ .Chart.Name }}
   labels:
     {{- include "notejam.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "notejam.fullname" . }}
+    name: {{ .Chart.Name }}-app
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:
