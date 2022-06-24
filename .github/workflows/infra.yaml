@@ -24,11 +24,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-        cli_config_credentials_token: ${{ secrets.GCP_SA_CR_KEY }}
-
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
