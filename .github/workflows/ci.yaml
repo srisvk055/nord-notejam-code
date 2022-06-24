@@ -92,9 +92,7 @@ jobs:
         ./get_helm.sh
         
     - run: |-
-        echo "$secrets.GCP_SA_CR_KEY" > ${HOME}/gcloud.json
-        gcloud auth activate-service-account --key-file=${HOME}/gcloud.json
-        gcloud auth configure-docker
+        gcloud auth configure-docker --quiet 
         gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_REGION" --project "$PROJECT_ID"
 
     - name: Deploy
