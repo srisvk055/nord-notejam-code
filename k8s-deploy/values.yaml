@@ -7,7 +7,7 @@ image:
   repository: gcr.io/gcp-ocp-352612/notejam/notejam
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  version: master
+  version: master-49b2a22
 
 service:
   type: ClusterIP
