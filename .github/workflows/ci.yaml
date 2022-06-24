@@ -85,9 +85,8 @@ jobs:
         chmod 700 get_helm.sh
         ./get_helm.sh
         
-
     - run: |-
-        gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_REGION"
+        gcloud container clusters get-credentials "$GKE_CLUSTER"
 
     - name: Deploy
       run: |-
