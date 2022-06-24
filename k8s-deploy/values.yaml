@@ -4,7 +4,7 @@ environment:
 replicaCount: 4
 
 image:
-  repository: gcr.io/gcp-ocp-352612/notejam/notejam
+  repository: gcr.io/nord-project/notejam/notejam
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   version: master-49b2a22
