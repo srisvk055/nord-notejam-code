@@ -80,20 +80,25 @@ jobs:
     steps:
     - name: Chekcout the latest version 
       uses: actions/checkout@v2
+    
     - id: 'auth'
       uses: 'google-github-actions/auth@v0'
       with:
         credentials_json: ${{ secrets.GCP_SA_CR_KEY }}
 
+    - uses: 'google-github-actions/get-gke-credentials@v0'
+      with:
+        cluster_name: ${{ env.GKE_CLUSTER }}
+        location: ${{ env.GKE_REGION }}
+        credentials: ${{ secrets.GCP_SA_CR_KEY }}
+        
     - name: Install helm
       run: |
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
         chmod 700 get_helm.sh
         ./get_helm.sh
         
-    - run: |-
-        gcloud auth configure-docker --quiet 
-        gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_REGION" --project "$PROJECT_ID"
+
 
     - name: Deploy
       run: |-
