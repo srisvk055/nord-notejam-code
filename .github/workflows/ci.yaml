@@ -92,7 +92,10 @@ jobs:
         ./get_helm.sh
         
     - run: |-
-        gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_REGION"
+        echo ${{ secrets.GCP_SA_CR_KEY }} > ${HOME}/gcloud.json
+        gcloud auth activate-service-account --key-file=${HOME}/gcloud.json
+        gcloud auth configure-docker
+        gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_REGION" --project "$PROJECT_ID"
 
     - name: Deploy
       run: |-
