@@ -3,6 +3,12 @@ provider "google" {
   project = "nord-project"
   region  = "us-central1"
 }
+
+terraform {
+  backend "gcs" {
+    bucket = "nord-project-gke-tf"
+    prefix = "terraform/state"
+  }
   
   required_providers {
     google = {
@@ -10,3 +16,4 @@ provider "google" {
       version = "~> 4.0.0"
     }
   }
+}
