@@ -40,34 +40,43 @@ jobs:
       - run: |-
           gcloud --quiet auth configure-docker
 
-      - name: Build the docker image to dev
-        run: |-
-          docker build -f Dockerfile -t gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:latest .
-
       - name: Login Docker
         uses: 'lagren/docker-gcr-action@master'
         with:
           SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_CR_KEY }}
           HOST: 'gcr.io'
-
-      - name: Push to the registry to dev
-        run: |-
-          docker push gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:latest
-
+      
       - uses: 'google-github-actions/get-gke-credentials@v0'
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_REGION }}
           credentials: ${{ secrets.GCP_SA_CR_KEY }}
-    
+
+      - name: Build the docker image and push to GCR
+        run: |-
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          docker build -f Dockerfile -t gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:${GITHUB_REF##*/}-$git_hash .
+          echo "Pushing image to GCR..."
+          docker push gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:${GITHUB_REF##*/}-$git_hash
+          echo "::set-output name=image::gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:${GITHUB_REF##*/}-$git_hash"
+
+      - name: Update Version
+        run: |
+          git_hash=$(git rev-parse --short "$GITHUB_SHA")
+          version=$(cat ./k8s-deploy/values.yaml | grep version: | awk '{print $2}')
+          sed -i "s/$version/${GITHUB_REF##*/}-$git_hash/" ./k8s-deploy/values.yaml
+          
+
+
   deploy:
     name: Deploy to GKE
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-    - name: Chekcout the latest version 
+    - name: Chekcout the latest version .
       uses: actions/checkout@v2
+    
     - id: 'auth'
       uses: 'google-github-actions/auth@v0'
       with:
@@ -78,17 +87,14 @@ jobs:
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
         chmod 700 get_helm.sh
         ./get_helm.sh
-        
+
     - run: |-
         gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_REGION"
-
+        
     - name: Deploy
       run: |-
         helm upgrade --install notejam ./k8s-deploy
 
 
-      - name: Commit and push changes.
-        uses: devops-infra/action-commit-push@v0.3
-        with:
-          github_token: ${{ secrets.TOKEN_GITHUB }}
-          commit_message: Version
+        
+
