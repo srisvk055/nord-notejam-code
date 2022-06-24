@@ -1,5 +1,4 @@
 name: "GKE Terraform"
-
 on:
   push:
     branches:
@@ -24,10 +23,12 @@ jobs:
         GKE_REGION: "us-central1-a"	   # TODO: update to cluster zone
     name: "Terraform"
     runs-on: ubuntu-latest
-    
+    strategy:
+      matrix:
+        working-directory: [terraform]
     defaults:
       run:
-        working-directory: [terraform]
+        working-directory: ${{ matrix.working-directory }}
     
     steps:
       - name: Checkout
