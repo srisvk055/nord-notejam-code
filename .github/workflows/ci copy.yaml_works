@@ -1,0 +1,88 @@
+name: Deploy notejam app to GKE
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches: 
+      - master
+    types:
+      #- created
+      - closed
+    paths-ignore:
+      - '**.md'
+      - 'log/**'
+      - '.github/**'
+
+env:
+  PROJECT_ID: "nord-project"
+  GKE_CLUSTER: "nord-project-cluster"    # TODO: update to cluster name
+  GKE_REGION: "us-central1"	   # TODO: update to cluster zone
+#  DEPLOYMENT_NAME: "notejam-app" # TODO: update deployment name if changed in deployment.yaml
+  IMAGE_NAME: "notejam"
+
+jobs:
+  build:
+    name: Build/Push docker image
+    runs-on: ubuntu-latest
+     
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v0'
+        with:
+          service_account_key: ${{ secrets.GCP_SA_CR_KEY }}
+          project_id: ${{ env.PROJECT_ID }}
+          
+      - run: |-
+          gcloud --quiet auth configure-docker
+
+      - name: Build the docker image to dev
+        run: |-
+          docker build -f Dockerfile -t gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:latest .
+
+      - name: Login Docker
+        uses: 'lagren/docker-gcr-action@master'
+        with:
+          SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_CR_KEY }}
+          HOST: 'gcr.io'
+
+      - name: Push to the registry to dev
+        run: |-
+          docker push gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:latest
+
+      - uses: 'google-github-actions/get-gke-credentials@v0'
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_REGION }}
+          credentials: ${{ secrets.GCP_SA_CR_KEY }}
+    
+  deploy:
+    name: Deploy to GKE
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Chekcout the latest version 
+      uses: actions/checkout@v2
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v0'
+      with:
+        credentials_json: ${{ secrets.GCP_SA_CR_KEY }}
+
+    - name: Install helm
+      run: |
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+        
+
+    - run: |-
+        gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_REGION"
+
+    - name: Deploy
+      run: |-
+        helm upgrade --install notejam ./k8s-deploy
