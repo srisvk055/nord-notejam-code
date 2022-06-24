@@ -22,7 +22,7 @@ jobs:
         GKE_CLUSTER: "nord-project-cluster"    # TODO: update to cluster name
         GKE_REGION: "us-central1-a"	   # TODO: update to cluster zone
         credentials: ${{ secrets.GCP_SA_CR_KEY }}
-    name: "Terraform".
+    name: "Terraform"
     runs-on: ubuntu-latest
 
     defaults:
