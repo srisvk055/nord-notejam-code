@@ -70,7 +70,7 @@ jobs:
         uses: devops-infra/action-commit-push@v0.3
         with:
           github_token: ${{ secrets.TOKEN_GITHUB }}
-          commit_message: Version updated
+          commit_message: Version updated to helm chart 
 
   deploy:
     name: Deploy to GKE
