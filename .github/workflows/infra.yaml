@@ -32,6 +32,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - run: |-
+          gcloud --quiet auth applicaiton-default login
+
       - name: Terraform Init
         id: init
         run: terraform init
