@@ -3,3 +3,4 @@
 *.tfvars
 *-credentials.json
 terraform.tfstate.*.backup
+.git*
