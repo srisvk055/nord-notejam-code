@@ -4,11 +4,7 @@ on:
     branches:
       - master
   pull_request:
-    branches: 
-      - master
-    types:
-      #- created
-      - closed
+
     paths-ignore:
       - '**.md'
       - 'log/**'
@@ -17,11 +13,6 @@ on:
 
 jobs:
   terraform:
-    env:
-        PROJECT_ID: "nord-project"
-        GKE_CLUSTER: "nord-project-cluster"    # TODO: update to cluster name
-        GKE_REGION: "us-central1-a"	   # TODO: update to cluster zone
-        credentials: ${{ secrets.GCP_SA_CR_KEY }}
     name: "Terraform"
     runs-on: ubuntu-latest
 
@@ -36,12 +27,15 @@ jobs:
       - name: Terraform Init
         id: init
         run: terraform init
+        env:
+          credentials: ${{ secrets.GCP_SA_CR_KEY }}
           
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
         run: terraform plan -no-color
-        continue-on-error: true
+        env:
+          credentials: ${{ secrets.GCP_SA_CR_KEY }}
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
@@ -50,6 +44,8 @@ jobs:
       - name: Terraform Apply .
         if: github.ref == 'refs/heads/master' && github.event_name == 'push' 
         run: terraform apply -auto-approve
+        env:
+          credentials: ${{ secrets.GCP_SA_CR_KEY }}
   
   bootstrap:
     name: bootstrap-cluster
