@@ -23,21 +23,10 @@ jobs:
         GKE_REGION: "us-central1-a"	   # TODO: update to cluster zone
     name: "Terraform"
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        working-directory: [terraform]
-    defaults:
-      run:
-        working-directory: ${{ matrix.working-directory }}
     
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
-      - name: Setup GCloud
-        uses: google-github-actions/setup-gcloud@master
-        with:
-          service_account_key: ${{ secrets.GCP_SA_CR_KEY }}
 
       - name: Terraform Init
         id: init
