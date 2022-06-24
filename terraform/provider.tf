@@ -9,7 +9,7 @@ terraform {
     bucket = "nord-project-gke-tf"
     prefix = "terraform/state"
   }
-  
+
   required_providers {
     google = {
       source  = "hashicorp/google"
