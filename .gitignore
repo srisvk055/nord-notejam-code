@@ -1,5 +1,5 @@
 .terraform/
-terraform
+.terraform.lock*
 *.tfvars
 *-credentials.json
 terraform.tfstate.*.backup
