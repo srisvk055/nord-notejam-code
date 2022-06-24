@@ -24,12 +24,10 @@ jobs:
         GKE_REGION: "us-central1-a"	   # TODO: update to cluster zone
     name: "Terraform"
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        working-directory: [terraform]
+    
     defaults:
       run:
-        working-directory: ${{ matrix.working-directory }}
+        working-directory: [terraform]
     
     steps:
       - name: Checkout
