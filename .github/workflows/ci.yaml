@@ -45,6 +45,12 @@ jobs:
         with:
           SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SA_CR_KEY }}
           HOST: 'gcr.io'
+      
+      - uses: 'google-github-actions/get-gke-credentials@v0'
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_REGION }}
+          credentials: ${{ secrets.GCP_SA_CR_KEY }}
 
       - name: Build the docker image and push to GCR
         run: |-
