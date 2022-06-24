@@ -1,0 +1,81 @@
+---
+# Source: notejam/templates/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev-notejam
+  labels:
+    environment: dev
+    app-version: "1.0"
+---
+# Source: notejam/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: notejam-app
+  namespace: dev-notejam
+  labels:
+    environment: dev
+    app-version: "1.0"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5000
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: notejam
+---
+# Source: notejam/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notejam-app
+  namespace: dev-notejam
+  labels:
+    environment: dev
+    app-version: "1.0"
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: notejam
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: notejam
+    spec:
+      containers:
+        - name: notejam
+          image: "gcr.io/nord-project/notejam/notejam:master-fa68ea5"
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+---
+# Source: notejam/templates/hpa.yaml
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: notejam-app
+  namespace: dev-notejam
+  labels:
+    environment: dev
+    app-version: "1.0"
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: notejam-app
+  minReplicas: 3
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: 70
