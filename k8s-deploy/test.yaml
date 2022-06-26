@@ -48,7 +48,7 @@ spec:
     spec:
       containers:
         - name: notejam
-          image: "gcr.io/nord-project/notejam/notejam:master-af7e054"
+          image: "gcr.io/nord-project/notejam/notejam:master-648a655"
           imagePullPolicy: IfNotPresent
           resources:
             limits:
