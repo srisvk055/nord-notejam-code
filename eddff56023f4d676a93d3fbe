@@ -1,0 +1,17 @@
+apiVersion: v1
+clusters:
+  - cluster:
+      certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUVMVENDQXBXZ0F3SUJBZ0lSQU9VbHF6bmpBdThSYVpWRDI3bG1tRDR3RFFZSktvWklodmNOQVFFTEJRQXcKTHpFdE1Dc0dBMVVFQXhNa1pUaGhObVF5T1RRdFlUUTROaTAwWkRWbUxXSTFZell0TURZeFpUZzVOVFV6TVRrMgpNQ0FYRFRJeU1EWXlOakV6TURVMU4xb1lEekl3TlRJd05qRTRNVFF3TlRVM1dqQXZNUzB3S3dZRFZRUURFeVJsCk9HRTJaREk1TkMxaE5EZzJMVFJrTldZdFlqVmpOaTB3TmpGbE9EazFOVE14T1RZd2dnR2lNQTBHQ1NxR1NJYjMKRFFFQkFRVUFBNElCandBd2dnR0tBb0lCZ1FEdjFCeU1icFZ4MzBLdEwxZVVleXNlMEo0aHJEbnErbGFnbW5IeQpKTDdJOHVUL3plc2dxVDB4RFpURDhHU1BtYzJ0NU91RXAvT2xUSHV0QUlPMVBoazVEM29WVDdZd1RQSnk4RGVWCjJvQWl2RFEzRkFXYXhhZ2IySDNTTWhxWCtlTEN1R0hRd2lsZ0NydWw4N2o0NU9qYldZSDllWHVZajFMVnU0cGMKYzBNTFFZWnBubFQwQVlvSHptalVBREpwOE1Qc0N2djM1TWhiSFV1dWVudmJseW4vWW82bjdPa0NIY0RFK3huMQpWRHkwYlk3QXNNTDVrbnBYRURGQjZMTWM3NVJxazZPWEw5bEhNZHJPb1NNY0l6elpNdjArNDlOK1VUK1BZSmpOCmtoWnU2dEZuQ2lGanFSd0Z2MXFhQSs2Y1NEM3dmQW9XdnRzamkvMWw5MTdaSVVxZlJqd1Z0WXlLd1pQZEJubG4KM2xjbzhKTjBMalNTTUtrWXdxL29GTklnYlBlMTNVc092ZWowdTlLL3pjWlZoSmFBcDErWHVvOHFSRkVVcHo2SworSy9DNDRSbVJJYmE2OC9IZll1R25lOUZFbGlPMnFubEhySE5NRlZEWFJScCtXS3BRMFg2MTNYMmxjYThVaThYCk9zb2JBRDV1NUpkRVRtZkt6UmRtb3hoTit0c0NBd0VBQWFOQ01FQXdEZ1lEVlIwUEFRSC9CQVFEQWdJRU1BOEcKQTFVZEV3RUIvd1FGTUFNQkFmOHdIUVlEVlIwT0JCWUVGQnphT1ZKYzdNa3RBMXdKUlh5c0xYa3J6Y2hOTUEwRwpDU3FHU0liM0RRRUJDd1VBQTRJQmdRQ1gzeUcrRE9veFAzdGpyemhiSUIra3NrWU5rZWxNVDBldnY1eHN3czVXCkhkOVFtL0xvcnZNT1ZwSGpjY2tWMW5Ha2lPWEN3UktiRGRndFkxTnFBNnI0WFdyaVlYYkVxSHR3clI3UUxYTlQKMTZhdDlxUVJLT3NmbGc3aEpTYS9TZ3VUSUFjRTVsR0gyS2tCMFVheFhzRnZJZ29UWWRFcHZDaFhNYmFNZ1pDUwpqemVZZDZtUXFPOUFWLzZJVmZ0MXdGUEZzMERNSHBlQnJQczJ0c04vVERDVnVEcEdLME5EQTNNY0lGWndTeUI5CjE4bG9ORTVoSkExVEl3YVdTYjBVMEkwUjl0OTNyRDFKQ0h2SXNNTkw0ekNXNW5oZTNHOGxQc04yWTlYMDJ6ZkwKRUZDUnAvYVV3NzUrYzdndFFHNERKQjZmTnNvbzNVNFlOV1NIM2VSaklHbmZvNGIyM2NWSkRsbHAzSWk3aEdQcQpMU2lDRlc3R2taeWQzYW84aHNTZnpIZ0dnUzVYZFFiSW54bFBLOVhTQm4xWkg1bHZvMUZyMlpRQWdKSGFpSi9jCjNZWllVdlJhcFJmUW13OHZJbVVwaFJmczRzc2oxUVNWNWZlYmx2ZXJGT2lONzNLY2pzUUxYMkIxMWRNdHJKYUgKSWtqMy9STTRZZlBjRTVUR1ljczYyZXc9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+      server: https://34.68.235.219
+    name: nord-project-cluster
+contexts:
+  - context:
+      cluster: nord-project-cluster
+      user: nord-project-cluster
+    name: gke_nord-project_us-central1-a_nord-project-cluster
+kind: Config
+current-context: gke_nord-project_us-central1-a_nord-project-cluster
+users:
+  - name: nord-project-cluster
+    user:
+      token: ya29.c.b0AXv0zTMpoQydkCk7ADf7kI40XyHu7GwpZ0N4_IueM2ictjP9VZ8f5_5FuHcCypxT8blO3XxezoX-l-sudoecn1JA5MtoElrvOU-J-55_5jjxfSOHq4b5LG8UFd2EU-HYnbn41ieRvUI_Ajy0MxEm5roOTGkY0UmE1sgYQPEPXKBUE-bqJd16e5fA5TIAoxHa1CTX7wGldQjv6kcp82mrQ1jck3JN-FAn.......................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................

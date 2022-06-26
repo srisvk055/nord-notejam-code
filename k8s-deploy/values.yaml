@@ -7,7 +7,7 @@ image:
   repository: gcr.io/nord-project/notejam/notejam
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  version: master-648a655
+  version: master-9a00bce
 
 
 service:
