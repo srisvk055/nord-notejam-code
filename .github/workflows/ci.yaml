@@ -42,7 +42,7 @@ jobs:
 
       - name: Build the docker image to dev
         run: |-
-          docker build -f Dockerfile -t gcr.io/$PROJECT_ID/nord/$IMAGE_NAME:latest .
+          docker build -f Dockerfile -t gcr.io/$PROJECT_ID/notejam/$IMAGE_NAME:latest .
 
       - name: Login Docker
         uses: 'lagren/docker-gcr-action@master'
