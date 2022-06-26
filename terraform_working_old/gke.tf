@@ -1,7 +1,3 @@
-resource "google_storage_bucket" "bucket" {
-  name = "nord-project-gke-tf"
-}
-
 ## container_cluster
 resource "google_container_cluster" "primary" {
   name                     = "nord-project-cluster"

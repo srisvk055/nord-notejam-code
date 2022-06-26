@@ -28,7 +28,7 @@ class NotejamBaseTestCase(TestCase):
     def create_app(self):
         self.fd, self.db = tempfile.mkstemp()
         test_app = app
-        test_app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///" + self.db
+        test_app.config['SQLALCHEMY_DATABASE_URI'] = "nord-project:us-central1" + notejam-db
         test_app.config['TESTING'] = True
         test_app.config['CSRF_ENABLED'] = False
         return test_app

@@ -10,7 +10,6 @@ COPY app/. /usr/src/app/
 
 RUN pip3 --no-cache-dir install -r requirements.txt
 
-RUN python db.py
 
 EXPOSE 5000
 
