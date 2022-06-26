@@ -1,4 +1,5 @@
 import os
+import pymysql
 
 
 class Config(object):
@@ -7,12 +8,18 @@ class Config(object):
     SECRET_KEY = 'notejam-flask-secret-key'
     WTF_CSRF_ENABLED = True
     CSRF_SESSION_KEY = 'notejam-flask-secret-key'
-    db_user = os.environ.get("root")
-    db_pass = os.environ.get("testing123")
-    db_name = os.environ.get("notejam-db")
+    CLOUDSQL_USER = os.environ.get("root")
+    CLOUDSQL_PASSWORD = os.environ.get("testing123")
+    CLOUDSQL_DATABASE = os.environ.get("notejam-db")
+    CLOUDSQL_CONNECTION_NAME = os.environ.get('nord-project:us-central1:notejam-instance')
 
-    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + str(db_user) + ':' + str(db_pass) + '@localhost/' + str(db_name)
-
+    SQLALCHEMY_DATABASE_URI =  (
+    'mysql+pymysql://{nam}:{pas}@localhost/{dbn}?unix_socket=/cloudsql/{con}').format (
+    nam=CLOUDSQL_USER,
+    pas=CLOUDSQL_PASSWORD,
+    dbn=CLOUDSQL_DATABASE,
+    con=CLOUDSQL_CONNECTION_NAME,
+)
 
 class ProductionConfig(Config):
     DEBUG = False
